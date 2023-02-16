@@ -42,7 +42,8 @@ function generateUniqueId() {
 
 function chatstripe(isAi, value, uniqueId) {
     return (
-
+        //`` this is template string
+        `
         <div class="wrapper ${isAi && 'ai'}" >
             <div class="chat" >
                 < div className="profile" >
@@ -52,6 +53,7 @@ function chatstripe(isAi, value, uniqueId) {
                 <div class="message" id="${uniqueId}">${value}</div>
             </div>
         </div>
+        `
     )
 }
 
@@ -59,20 +61,31 @@ function chatstripe(isAi, value, uniqueId) {
 const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = newFormData(form);
+    const data = new FormData(form);
 
     //user chatStripe
     chatContainer.innerHTML += chatstripe(false, data.get('prompt'));
 
 
     //text area clear
-    FormData.reset();
+    form.reset();
 
     //bot's Chatstripe
     //uid for GPT uid
     const uniqueId = generateUniqueId();
-    chatContainer.innerHTML += chatstripe(true, " ", uniqueID);
+    chatContainer.innerHTML += chatstripe(true, " ", uniqueId);
     // " " because it will be filled later
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    const messageDiv = Document.getElementById(uniqueId);
+
+    loader(messageDiv);
 }
+
+form.addEventListener('submit', handleSubmit);
+form.addEventListener('keyup', (e) => {
+    if (e.KeyCode === 13) {
+        handleSubmit(e);
+    }
+})
